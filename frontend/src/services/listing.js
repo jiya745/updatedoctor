@@ -9,7 +9,7 @@ export class Listing {
     setStatus = null;
     noiseProcessor = new VideoSDKNoiseSuppressor();
 
-    constructor(handlePlayAudio, handleIntrupt, setStatus) {
+    constructor(handlePlayAudio, handleIntrupt, setStatus,setMessage, name,diseases,description) {
         this.play = handlePlayAudio;
         this.stop = handleIntrupt;
         this.setStatus = setStatus;
@@ -17,6 +17,12 @@ export class Listing {
         this.sendAudioStream = this.sendAudioStream.bind(this); 
         this.socket.onopen = () => {
             console.log("WebSocket connection opened");
+            this.socket.send(JSON.stringify({
+                event: "start",
+                start: {
+                    name,diseases,description
+                }
+            }));
             setTimeout(() => this.sendAudioStream(), 4000);
         };
 
@@ -29,11 +35,19 @@ export class Listing {
                 case 'transcript':
                     const transcript = data.transcript.value;
                     console.log("User:", transcript);
+                    setMessage(prev => [...prev,{
+                        role: "Patient",
+                        content: transcript
+                    }])
                     break;
            
                 case 'audio':
                     const response = data.audio;
                     console.log("George Washington:", response.transcription);
+                    setMessage(prev => [...prev,{
+                        role: "Doctor",
+                        content: response.transcription
+                    }])
                     this.play(`${BACKEND_URL}/${response.src}`, response.data);
                     break;
          

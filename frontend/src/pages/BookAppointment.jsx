@@ -9,9 +9,11 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Textarea } from '@/components/ui/textarea';
 import Navbar from '@/components/Navbar';
 import { toast } from 'sonner';
+import { useBookAppointment } from '@/context/BookAppointmentContext';
 
 const BookAppointment = () => {
   const navigate = useNavigate();
+  const {setName, setDiseases, setDescription} = useBookAppointment();
   const [formData, setFormData] = useState({
     name: '',
     disease: '',
@@ -107,8 +109,11 @@ const BookAppointment = () => {
       // Simulate API call
       setTimeout(() => {
         setIsLoading(false);
-  
+        setName(formData.name)
+        setDiseases(formData.disease)
+        setDescription(formData.symptoms)
         toast("Your appointment has been successfully scheduled.");
+
         
         navigate('/doctor-clinic', { 
           state: { 

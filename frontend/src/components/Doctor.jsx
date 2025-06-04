@@ -5,6 +5,7 @@ import { SkeletonUtils } from 'three-stdlib'
 import { Listing } from '../services/listing'
 import * as THREE from "three";
 import { welcome } from '../../constants/welcome'
+import { useBookAppointment } from '@/context/BookAppointmentContext'
 
 const corresponding = {
   A: "viseme_PP",
@@ -25,6 +26,7 @@ export function Doctor(props) {
   const [audioPlay, setAudioPlay] = useState(false);
   const [animation, setAnimation] = useState("Idle");
   const [start, setStart] = useState(false);
+  const {name,diseases,description} = useBookAppointment();
 
   const { scene } = useGLTF('/models/doctor-main.glb')
   const clone = React.useMemo(() => SkeletonUtils.clone(scene), [scene])
@@ -271,7 +273,7 @@ export function Doctor(props) {
   // start listing
   useEffect(() => {
     if (listingRef.current) return;
-    listingRef.current = new Listing(handlePlayAudio, handleIntrupt,props.setStatus);
+    listingRef.current = new Listing(handlePlayAudio, handleIntrupt,props.setStatus,props.setMessage, name,diseases,description);
   }, []);
 
 

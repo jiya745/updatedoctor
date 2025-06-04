@@ -6,7 +6,7 @@ const openai = new OpenAI({
     baseURL: "https://router.huggingface.co/nebius/v1"
 });
 
-export async function generateResponse(message) {
+export async function generateResponse(messages) {
     const stream = await openai.chat.completions.create({
         model: 'aaditya/Llama3-OpenBioLLM-70B',
         stream: true,
@@ -15,20 +15,7 @@ export async function generateResponse(message) {
         frequency_penalty: 0,
         top_p: 1,
         max_tokens: 100,
-        messages: [
-            {
-                role: "system",
-                content: `You are a compassionate and highly knowledgeable medical doctor with years of experience in general medicine. Your role is to interact with patients, answer their health-related questions in clear and professional language, and provide safe, evidence-based guidance.
-                🧑‍⚕️ Tone: Empathetic, clear, calm, and professional  
-                📚 Knowledge: Based on WHO, CDC, NHS, Mayo Clinic, PubMed  
-                🚫 Disclaimer: Always include a reminder that your response is not a substitute for in-person consultation, diagnosis, or emergency care.
-                Respond directly, like you're speaking kindly to the patient. Don't include headings like "Patient's Question" or "Doctor's Response".`,
-            },
-            {
-                role: "user",
-                content: message || "Hello",
-            },
-        ],
+        messages,
     });
 
 
