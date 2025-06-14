@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -8,9 +7,12 @@ import { Label } from '@/components/ui/label';
 import Navbar from '@/components/Navbar';
 import { Lock, Mail } from 'lucide-react';
 import { toast } from 'sonner';
+import { BACKEND_URL } from "../utils/getResponse";
+import { useUser } from '@/provider/UserProvider';
 
 const Login = () => {
   const navigate = useNavigate();
+  const { login } = useUser();
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -61,21 +63,44 @@ const Login = () => {
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     
     if (validateForm()) {
       setIsLoading(true);
       
-      // Simulate API call
-      setTimeout(() => {
-        setIsLoading(false);
-        
-        // For demo purposes, consider any login successful
-        toast("Login Successful");
-        
+      try {
+        const response = await fetch(`${BACKEND_URL}/api/v1/login`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          credentials: 'include', // This is important for cookies
+          body: JSON.stringify(formData),
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(data.message || 'Login failed');
+        }
+
+        // Use the login function from UserProvider
+        login(data.user, data.token);
+
+        toast.success('Login successful!');
         navigate('/book-appointment');
-      }, 1500);
+      } catch (error) {
+        toast.error(error.message || 'An error occurred during login');
+        if (error.message.includes('Invalid email or password')) {
+          setErrors({
+            email: 'Invalid email or password',
+            password: 'Invalid email or password',
+          });
+        }
+      } finally {
+        setIsLoading(false);
+      }
     }
   };
 

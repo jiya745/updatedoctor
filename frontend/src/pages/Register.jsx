@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -10,18 +9,19 @@ import { Checkbox } from '@/components/ui/checkbox';
 import Navbar from '@/components/Navbar';
 import { Mail, User, Lock } from 'lucide-react';
 import { toast } from 'sonner';
+import { BACKEND_URL } from "../utils/getResponse";
 
 const Register = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
-    fullName: '',
+    name: '',
     email: '',
     password: '',
     confirmPassword: '',
     acceptTerms: false,
   });
   const [errors, setErrors] = useState({
-    fullName: '',
+    name: '',
     email: '',
     password: '',
     confirmPassword: '',
@@ -32,15 +32,15 @@ const Register = () => {
   const validateForm = () => {
     let valid = true;
     const newErrors = {
-      fullName: '',
+      name: '',
       email: '',
       password: '',
       confirmPassword: '',
       acceptTerms: '',
     };
 
-    if (!formData.fullName.trim()) {
-      newErrors.fullName = 'Full name is required';
+    if (!formData.name.trim()) {
+      newErrors.name = 'Full name is required';
       valid = false;
     }
 
@@ -107,20 +107,50 @@ const Register = () => {
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     
     if (validateForm()) {
       setIsLoading(true);
       
-      // Simulate API call
-      setTimeout(() => {
+      try {
+        const response = await fetch(`${BACKEND_URL}/api/v1/signup`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            name: formData.name,
+            email: formData.email,
+            password: formData.password,
+          }),
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(data.message || 'Registration failed');
+        }
+
+        // Store token in localStorage
+        localStorage.setItem('token', data.token);
+        
+        // Store user data in localStorage
+        localStorage.setItem('user', JSON.stringify(data.user));
+
+        toast.success('Registration successful!');
+        navigate('/book-appointment');
+      } catch (error) {
+        toast.error(error.message || 'An error occurred during registration');
+        if (error.message.includes('already exists')) {
+          setErrors({
+            ...errors,
+            email: 'Email already exists',
+          });
+        }
+      } finally {
         setIsLoading(false);
-        
-        toast("Registration Successful");
-        
-        navigate('/login');
-      }, 1500);
+      }
     }
   };
 
@@ -140,19 +170,19 @@ const Register = () => {
             <CardContent>
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div className="space-y-2">
-                  <Label htmlFor="fullName">Full Name</Label>
+                  <Label htmlFor="name">Full Name</Label>
                   <div className="relative">
                     <User className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
                     <Input
-                      id="fullName"
-                      name="fullName"
+                      id="name"
+                      name="name"
                       placeholder="John Doe"
-                      value={formData.fullName}
+                      value={formData.name}
                       onChange={handleChange}
-                      className={`pl-10 ${errors.fullName ? 'border-red-500' : ''}`}
+                      className={`pl-10 ${errors.name ? 'border-red-500' : ''}`}
                     />
                   </div>
-                  {errors.fullName && <p className="text-sm text-red-500">{errors.fullName}</p>}
+                  {errors.name && <p className="text-sm text-red-500">{errors.name}</p>}
                 </div>
                 
                 <div className="space-y-2">

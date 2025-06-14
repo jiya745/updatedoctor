@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -10,6 +9,7 @@ import { Textarea } from '@/components/ui/textarea';
 import Navbar from '@/components/Navbar';
 import { toast } from 'sonner';
 import { useBookAppointment } from '@/context/BookAppointmentContext';
+import { BACKEND_URL } from '@/utils/getResponse';
 
 const BookAppointment = () => {
   const navigate = useNavigate();
@@ -100,27 +100,49 @@ const BookAppointment = () => {
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     
     if (validateForm()) {
       setIsLoading(true);
       
-      // Simulate API call
-      setTimeout(() => {
-        setIsLoading(false);
-        setName(formData.name)
-        setDiseases(formData.disease)
-        setDescription(formData.symptoms)
-        toast("Your appointment has been successfully scheduled.");
+      try {
+        const response = await fetch(`${BACKEND_URL}/api/v1/appointments`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          credentials: 'include',
+          body: JSON.stringify({
+            name: formData.name,
+            disease: formData.disease,
+            description: formData.symptoms
+          })
+        });
 
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(data.message || 'Failed to create appointment');
+        }
+
+        setName(formData.name);
+        setDiseases(formData.disease);
+        setDescription(formData.symptoms);
+        
+        toast.success("Your appointment has been successfully scheduled.");
         
         navigate('/doctor-clinic', { 
           state: { 
             appointmentData: formData 
           } 
         });
-      }, 1500);
+      } catch (error) {
+        console.error('Error creating appointment:', error);
+        toast.error(error.message || 'Failed to create appointment. Please try again.');
+      } finally {
+        setIsLoading(false);
+      }
     }
   };
 
