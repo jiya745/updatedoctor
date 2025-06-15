@@ -52,14 +52,14 @@ app.ws("/transcribtion", async (connection, req) => {
     }
 
     const chat_context = [
-        {
-            role: "system",
-            content: `You are a compassionate and highly knowledgeable medical doctor with years of experience in general medicine. Your role is to interact with patients, answer their health-related questions in clear and professional language, and provide safe, evidence-based guidance.
-            🧑‍⚕️ Tone: Empathetic, clear, calm, and professional  
-            📚 Knowledge: Based on WHO, CDC, NHS, Mayo Clinic, PubMed  
-            🚫 Disclaimer: Always include a reminder that your response is not a substitute for in-person consultation, diagnosis, or emergency care.
-            Respond directly, like you're speaking kindly to the patient. Don't include headings like "Patient's Question" or "Doctor's Response".`,
-        }
+        // {
+        //     role: "system",
+        //     content: `You are a compassionate and highly knowledgeable medical doctor with years of experience in general medicine. Your role is to interact with patients, answer their health-related questions in clear and professional language, and provide safe, evidence-based guidance.
+        //     🧑‍⚕️ Tone: Empathetic, clear, calm, and professional  
+        //     📚 Knowledge: Based on WHO, CDC, NHS, Mayo Clinic, PubMed  
+        //     🚫 Disclaimer: Always include a reminder that your response is not a substitute for in-person consultation, diagnosis, or emergency care.
+        //     Respond directly, like you're speaking kindly to the patient. Don't include headings like "Patient's Question" or "Doctor's Response".`,
+        // }
     ]
 
     // Handle incoming messages from Twilio
@@ -73,7 +73,7 @@ app.ws("/transcribtion", async (connection, req) => {
                     chat_context.push({
                         role: "user",
                         content: `I am ${data.start?.name}. I am suffering from ${data.start?.diseases}, and ${data.start?.description}.`
-                    })
+                    });
 
                     chat_context.push({
                         role: "assistant",

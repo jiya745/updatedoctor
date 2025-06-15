@@ -92,7 +92,8 @@ const MyAppointments = () => {
           <div className="grid gap-6">
             {appointments.map((appointment, index) => (
               <Card key={index} className="overflow-hidden">
-                <CardHeader className="bg-gray-50">
+
+                <CardContent className="p-6">
                   <div className="flex justify-between items-start">
                     <div>
                       <CardTitle className="text-xl font-semibold">
@@ -102,58 +103,8 @@ const MyAppointments = () => {
                         {appointment.description || 'No description provided'}
                       </CardDescription>
                     </div>
-                    <span className={`px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(appointment.status)}`}>
-                      {appointment.status || 'Pending'}
-                    </span>
                   </div>
-                </CardHeader>
-                <CardContent className="p-6">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div className="space-y-4">
-                      <div className="flex items-center space-x-3">
-                        <Calendar className="h-5 w-5 text-gray-400" />
-                        <span className="text-gray-600">
-                          {appointment.date ? format(new Date(appointment.date), 'MMMM dd, yyyy') : 'Date not set'}
-                        </span>
-                      </div>
-                      <div className="flex items-center space-x-3">
-                        <Clock className="h-5 w-5 text-gray-400" />
-                        <span className="text-gray-600">
-                          {appointment.time || 'Time not set'}
-                        </span>
-                      </div>
-                    </div>
-                    <div className="space-y-4">
-                      <div className="flex items-center space-x-3">
-                        <MessageSquare className="h-5 w-5 text-gray-400" />
-                        <span className="text-gray-600">
-                          {appointment.chats?.length || 0} messages
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                  {appointment.chats && appointment.chats.length > 0 && (
-                    <div className="mt-6 pt-6 border-t">
-                      <h4 className="font-semibold mb-3">Recent Messages</h4>
-                      <div className="space-y-3">
-                        {appointment.chats.slice(-2).map((chat, chatIndex) => (
-                          <div
-                            key={chatIndex}
-                            className={`p-3 rounded-lg ${
-                              chat.role === 'doctor'
-                                ? 'bg-blue-50 ml-4'
-                                : 'bg-gray-50 mr-4'
-                            }`}
-                          >
-                            <p className="text-sm text-gray-700">{chat.content}</p>
-                            <p className="text-xs text-gray-500 mt-1">
-                              {chat.role === 'doctor' ? 'Doctor' : 'You'} • {format(new Date(), 'MMM dd, h:mm a')}
-                            </p>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  )}
+
                 </CardContent>
               </Card>
             ))}
