@@ -20,20 +20,20 @@ const About = () => {
 
   const faqs = [
     {
-      question: "How accurate is the AI Doctor?",
-      answer: "Our AI Doctor system has been trained on millions of medical records and cases, achieving an accuracy rate of over 90% for common conditions. However, it's designed to be a supplementary tool and not a replacement for professional medical advice."
+      question: "How accurate is the Health Sphaere?",
+      answer: "Our Health Sphaere system has been trained on millions of medical records and cases, achieving an accuracy rate of over 90% for common conditions. However, it's designed to be a supplementary tool and not a replacement for professional medical advice."
     },
     {
       question: "Is my medical data secure?",
       answer: "Yes, we prioritize your privacy and security. All data is encrypted using industry-standard protocols, and we comply with HIPAA regulations. Your medical information is never shared without your explicit consent."
     },
     {
-      question: "Can I use AI Doctor for emergencies?",
-      answer: "No, AI Doctor is not suitable for emergency situations. If you're experiencing a medical emergency, please call emergency services immediately or visit the nearest emergency room."
+      question: "Can I use Health Sphaere for emergencies?",
+      answer: "No, Health Sphaere is not suitable for emergency situations. If you're experiencing a medical emergency, please call emergency services immediately or visit the nearest emergency room."
     },
     {
-      question: "How does the AI Doctor make diagnoses?",
-      answer: "The AI Doctor analyzes your reported symptoms, medical history, and relevant factors using advanced machine learning algorithms. It compares this information against a vast database of medical knowledge to suggest possible conditions and treatments."
+      question: "How does the Health Sphaere make diagnoses?",
+      answer: "The Health Sphaere analyzes your reported symptoms, medical history, and relevant factors using advanced machine learning algorithms. It compares this information against a vast database of medical knowledge to suggest possible conditions and treatments."
     },
     {
       question: "Can I speak with a human doctor if needed?",
@@ -48,7 +48,7 @@ const About = () => {
       {/* Hero Section */}
       <div className="bg-medical-light py-16">
         <div className="container mx-auto px-4 text-center">
-          <h1 className="text-4xl font-bold mb-6">About AI Doctor</h1>
+          <h1 className="text-4xl font-bold mb-6">About Health Sphaere</h1>
           <p className="text-lg text-gray-700 max-w-3xl mx-auto">
             Our AI-powered healthcare assistant combines cutting-edge artificial intelligence with medical expertise
             to provide accessible, personalized healthcare guidance whenever you need it.
@@ -121,7 +121,7 @@ const About = () => {
         <div className="container mx-auto px-4">
           <h2 className="text-3xl font-bold text-center mb-6">Supported Conditions</h2>
           <p className="text-center text-gray-600 mb-12 max-w-3xl mx-auto">
-            Our AI Doctor is trained to recognize and provide guidance on a wide range of common health conditions,
+            Our Health Sphaere is trained to recognize and provide guidance on a wide range of common health conditions,
             including but not limited to:
           </p>
           
@@ -162,7 +162,7 @@ const About = () => {
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div>
-              <h3 className="text-xl font-semibold mb-4">AI Doctor</h3>
+              <h3 className="text-xl font-semibold mb-4">Health Sphaere</h3>
               <p className="text-gray-300">
                 Providing accessible healthcare through advanced AI technology.
               </p>
@@ -185,7 +185,7 @@ const About = () => {
             </div>
           </div>
           <div className="border-t border-gray-700 mt-8 pt-8 text-center text-gray-300">
-            <p>&copy; {new Date().getFullYear()} AI Doctor. All rights reserved.</p>
+            <p>&copy; {new Date().getFullYear()} Health Sphaere. All rights reserved.</p>
           </div>
         </div>
       </footer>

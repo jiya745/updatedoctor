@@ -13,7 +13,7 @@ export class TranscriptionService extends EventEmitter {
     //   'token',
     //   process.env.DEEPGRAM_API_KEY,
     // ]);
-    this.socket = new WebSocket('wss://api.deepgram.com/v1/listen?model=nova-2-phonecall&language=en&smart_format=true&sample_rate=8000&channels=1&multichannel=false&no_delay=true&endpointing=300', [
+    this.socket = new WebSocket('wss://api.deepgram.com/v1/listen?language=multi&model=nova-3&smart_format=true&sample_rate=8000&channels=1&multichannel=false&no_delay=true&endpointing=300', [
       'token',
       process.env.DEEPGRAM_API_KEY,
     ]);

@@ -1,14 +1,101 @@
 
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Calendar, Heart, Stethoscope, Clock } from 'lucide-react';
 import Navbar from '@/components/Navbar';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
+import { Textarea } from '@/components/ui/textarea';
+import { toast } from 'sonner';
+import { BACKEND_URL } from '@/utils/getResponse';
 
 const Index = () => {
+  const [searchParams] = useSearchParams();
+  const [showFeedback, setShowFeedback] = useState(false);
+  const [feedback, setFeedback] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const navigate = useNavigate()
+
+  useEffect(() => {
+    if (searchParams.get('feedback') === '1') {
+      setShowFeedback(true);
+    }
+  }, [searchParams]);
+
+  const handleSubmitFeedback = async () => {
+    if (!feedback.trim()) {
+      toast.error('Please enter your feedback');
+      return;
+    }
+
+    setIsSubmitting(true);
+    try {
+      const response = await fetch(`${BACKEND_URL}/api/v1/feedback`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ feedback: feedback.trim() })
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        toast.success('Thank you for your feedback!');
+        handleClose();
+        setFeedback('');
+      } else {
+        throw new Error(data.message);
+      }
+    } catch (error) {
+      toast.error(error.message || 'Failed to submit feedback. Please try again.');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleClose = () => {
+    setShowFeedback(false);
+    navigate("/");
+  }
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar />
+      
+      {/* Feedback Dialog */}
+      <Dialog open={showFeedback} onOpenChange={handleClose}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Session Feedback</DialogTitle>
+            <DialogDescription>
+              Please share your experience with our AI doctor. Your feedback helps us improve our service.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="py-4">
+            <Textarea
+              placeholder="Tell us about your experience..."
+              value={feedback}
+              onChange={(e) => setFeedback(e.target.value)}
+              className="min-h-[100px]"
+            />
+          </div>
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={handleClose}
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={handleSubmitFeedback}
+              disabled={isSubmitting}
+              className="bg-medical-blue hover:bg-blue-700"
+            >
+              {isSubmitting ? 'Submitting...' : 'Submit Feedback'}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
       
       {/* Hero Section */}
       <div className="bg-gradient-to-r from-medical-light to-blue-50 py-16 md:py-24">
@@ -20,7 +107,7 @@ const Index = () => {
                 <span className="text-medical-blue">For You</span>
               </h1>
               <p className="text-lg text-gray-700 mb-8 max-w-lg">
-                Get instant medical assistance and personalized healthcare advice from our AI Doctor. Book an appointment in minutes.
+                Get instant medical assistance and personalized healthcare advice from our Health Sphaere. Book an appointment in minutes.
               </p>
               <div className="flex flex-col sm:flex-row gap-4">
                 <Button asChild className="hero-button bg-medical-blue hover:bg-blue-700">
@@ -114,7 +201,7 @@ const Index = () => {
                 </div>
               </div>
               <p className="text-gray-600">
-                "The AI Doctor provided me with accurate advice for my condition. It was quick, convenient, and saved me a trip to the hospital."
+                "The Health Sphaere provided me with accurate advice for my condition. It was quick, convenient, and saved me a trip to the hospital."
               </p>
             </div>
             
@@ -128,7 +215,7 @@ const Index = () => {
                 </div>
               </div>
               <p className="text-gray-600">
-                "I was skeptical at first, but the AI Doctor's diagnosis was confirmed by my physician. Impressed with the accuracy!"
+                "I was skeptical at first, but the Health Sphaere's diagnosis was confirmed by my physician. Impressed with the accuracy!"
               </p>
             </div>
             
@@ -142,7 +229,7 @@ const Index = () => {
                 </div>
               </div>
               <p className="text-gray-600">
-                "Using the AI Doctor app has been a game-changer for managing my chronic condition. The follow-ups and reminders are extremely helpful."
+                "Using the Health Sphaere app has been a game-changer for managing my chronic condition. The follow-ups and reminders are extremely helpful."
               </p>
             </div>
           </div>
@@ -154,7 +241,7 @@ const Index = () => {
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div>
-              <h3 className="text-xl font-semibold mb-4">AI Doctor</h3>
+              <h3 className="text-xl font-semibold mb-4">Health Sphaere</h3>
               <p className="text-gray-300">
                 Providing accessible healthcare through advanced AI technology.
               </p>
@@ -177,7 +264,7 @@ const Index = () => {
             </div>
           </div>
           <div className="border-t border-gray-700 mt-8 pt-8 text-center text-gray-300">
-            <p>&copy; {new Date().getFullYear()} AI Doctor. All rights reserved.</p>
+            <p>&copy; {new Date().getFullYear()} Health Sphaere. All rights reserved.</p>
           </div>
         </div>
       </footer>

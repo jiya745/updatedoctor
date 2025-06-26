@@ -9,6 +9,16 @@ import { Lock, Mail } from 'lucide-react';
 import { toast } from 'sonner';
 import { BACKEND_URL } from "../utils/getResponse";
 import { useUser } from '@/provider/UserProvider';
+import {
+  Dialog,
+  DialogTrigger,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+  DialogClose
+} from '@/components/ui/dialog';
 
 const Login = () => {
   const navigate = useNavigate();
@@ -22,6 +32,10 @@ const Login = () => {
     password: '',
   });
   const [isLoading, setIsLoading] = useState(false);
+  const [forgotOpen, setForgotOpen] = useState(false);
+  const [forgotEmail, setForgotEmail] = useState('');
+  const [forgotLoading, setForgotLoading] = useState(false);
+  const [forgotResult, setForgotResult] = useState('');
 
   const validateForm = () => {
     let valid = true;
@@ -53,7 +67,7 @@ const Login = () => {
       ...formData,
       [name]: value,
     });
-    
+
     // Clear error when user types
     if (errors[name]) {
       setErrors({
@@ -65,10 +79,10 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     if (validateForm()) {
       setIsLoading(true);
-      
+
       try {
         const response = await fetch(`${BACKEND_URL}/api/v1/login`, {
           method: 'POST',
@@ -104,10 +118,33 @@ const Login = () => {
     }
   };
 
+  const handleForgotPassword = async (e) => {
+    e.preventDefault();
+    setForgotLoading(true);
+    setForgotResult('');
+    try {
+      const response = await fetch(`${BACKEND_URL}/api/v1/forgot-password`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: forgotEmail })
+      });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.message || 'Failed to send reset link');
+      setForgotResult('Password reset link sent! Check your email (or see the link below).');
+      toast.success('Password reset link generated!');
+      if (data.resetUrl) setForgotResult(prev => prev + `\nFor Test Reset Link: ${data.resetUrl}`);
+    } catch (error) {
+      setForgotResult(error.message);
+      toast.error(error.message);
+    } finally {
+      setForgotLoading(false);
+    }
+  };
+
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar />
-      
+
       <div className="flex-1 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 bg-gray-50">
         <div className="w-full max-w-md">
           <Card className="shadow-lg">
@@ -135,13 +172,14 @@ const Login = () => {
                   </div>
                   {errors.email && <p className="text-sm text-red-500">{errors.email}</p>}
                 </div>
-                
+
                 <div className="space-y-2">
                   <div className="flex items-center justify-between">
                     <Label htmlFor="password">Password</Label>
-                    <Link to="#" className="text-sm text-medical-blue hover:underline">
+                    <button type="button" className="text-sm text-medical-blue hover:underline bg-transparent p-0" onClick={() => setForgotOpen(true)}>
                       Forgot password?
-                    </Link>
+                    </button>
+
                   </div>
                   <div className="relative">
                     <Lock className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
@@ -157,7 +195,7 @@ const Login = () => {
                   </div>
                   {errors.password && <p className="text-sm text-red-500">{errors.password}</p>}
                 </div>
-                
+
                 <Button type="submit" className="w-full bg-medical-blue hover:bg-blue-700" disabled={isLoading}>
                   {isLoading ? 'Logging in...' : 'Login'}
                 </Button>
@@ -174,6 +212,38 @@ const Login = () => {
           </Card>
         </div>
       </div>
+
+      <Dialog open={forgotOpen} onOpenChange={setForgotOpen}>
+        <DialogTrigger asChild>
+
+        </DialogTrigger>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Forgot Password</DialogTitle>
+            <DialogDescription>Enter your email to receive a password reset link.</DialogDescription>
+          </DialogHeader>
+          <form onSubmit={handleForgotPassword} className="space-y-4">
+            <Input
+              id="forgot-email"
+              name="forgot-email"
+              type="email"
+              placeholder="you@example.com"
+              value={forgotEmail}
+              onChange={e => setForgotEmail(e.target.value)}
+              required
+            />
+            <DialogFooter>
+              <Button type="submit" disabled={forgotLoading} className="w-full bg-medical-blue">
+                {forgotLoading ? 'Sending...' : 'Send Reset Link'}
+              </Button>
+            </DialogFooter>
+          </form>
+          {forgotResult && <div className="mt-2 text-sm text-gray-700 whitespace-pre-line">{forgotResult}</div>}
+          <DialogClose asChild>
+            <Button variant="outline" className="w-full mt-2">Close</Button>
+          </DialogClose>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

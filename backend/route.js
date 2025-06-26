@@ -2,6 +2,8 @@ import express from 'express';
 import User from './model/user.js';
 import validator from 'validator';
 import jwt from 'jsonwebtoken';
+import crypto from 'crypto';
+import Feedback from './model/feedback.js';
 
 const router = express.Router();
 
@@ -240,6 +242,91 @@ router.post('/appointments', async (req, res) => {
         res.status(500).json({
             success: false,
             message: 'Error creating appointment',
+            error: process.env.NODE_ENV === 'development' ? error.message : 'Internal server error'
+        });
+    }
+});
+
+// Forgot Password API
+router.post('/forgot-password', async (req, res) => {
+    try {
+        const { email } = req.body;
+        if (!email) {
+            return res.status(400).json({ success: false, message: 'Please provide your email address' });
+        }
+        const user = await User.findOne({ email });
+        if (!user) {
+            return res.status(404).json({ success: false, message: 'User not found with this email' });
+        }
+        // Generate reset token
+        const resetToken = user.getResetPasswordToken();
+        await user.save({ validateBeforeSave: false });
+        // In production, send email with this link
+        const resetUrl = `http://localhost:5173/reset-password/${resetToken}`;
+        console.log(resetUrl)
+        res.status(200).json({ success: true, message: 'Password reset link generated', resetUrl });
+    } catch (error) {
+        res.status(500).json({ success: false, message: 'Error generating password reset link', error: error.message });
+    }
+});
+
+// Reset Password API
+router.post('/reset-password/:token', async (req, res) => {
+    try {
+        const resetPasswordToken = crypto.createHash('sha256').update(req.params.token).digest('hex');
+        const user = await User.findOne({
+            resetPasswordToken,
+            resetPasswordExpire: { $gt: Date.now() }
+        });
+        if (!user) {
+            return res.status(400).json({ success: false, message: 'Invalid or expired password reset token' });
+        }
+        const { password } = req.body;
+        if (!password) {
+            return res.status(400).json({ success: false, message: 'Please provide a new password' });
+        }
+        user.password = password;
+        user.resetPasswordToken = undefined;
+        user.resetPasswordExpire = undefined;
+        await user.save();
+        res.status(200).json({ success: true, message: 'Password reset successful' });
+    } catch (error) {
+        res.status(500).json({ success: false, message: 'Error resetting password', error: error.message });
+    }
+});
+
+
+// Feedback API
+router.post('/feedback', async (req, res) => {
+    try {
+        const { feedback } = req.body;
+        const token = req.cookies.token;
+        
+        if (!feedback || !feedback.trim()) {
+            return res.status(400).json({ success: false, message: 'Feedback is required' });
+        }
+
+        let userId;
+        if (token) {
+            const decoded = jwt.verify(token, process.env.JWT_SECRET);
+            userId = decoded._id;
+        }
+
+        const newFeedback = await Feedback.create({
+            feedback,
+            userId: userId || null
+        });
+
+        res.status(201).json({ 
+            success: true, 
+            message: 'Feedback submitted successfully',
+            feedback: newFeedback
+        });
+    } catch (error) {
+        console.error('Feedback submission error:', error);
+        res.status(500).json({ 
+            success: false, 
+            message: 'Error submitting feedback', 
             error: process.env.NODE_ENV === 'development' ? error.message : 'Internal server error'
         });
     }

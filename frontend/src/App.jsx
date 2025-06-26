@@ -13,6 +13,7 @@ import NotFound from "./pages/NotFound";
 import { BookAppointmentProvider } from "./context/BookAppointmentContext";
 import UserProvider from "./provider/UserProvider";
 import MyAppointments from "./pages/MyAppointments";
+import ResetPassword from "./pages/ResetPassword";
 
 const queryClient = new QueryClient();
 
@@ -32,6 +33,7 @@ const App = () => (
               <Route path="/book-appointment" element={<BookAppointment />} />
               <Route path="/doctor-clinic" element={<DoctorClinic />} />
               <Route path="/appointments" element={<MyAppointments />} />
+              <Route path="/reset-password/:token" element={<ResetPassword />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </BrowserRouter>

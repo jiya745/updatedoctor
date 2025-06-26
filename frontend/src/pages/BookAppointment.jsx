@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -10,6 +10,7 @@ import Navbar from '@/components/Navbar';
 import { toast } from 'sonner';
 import { useBookAppointment } from '@/context/BookAppointmentContext';
 import { BACKEND_URL } from '@/utils/getResponse';
+import { useUser } from '@/provider/UserProvider';
 
 const BookAppointment = () => {
   const navigate = useNavigate();
@@ -26,6 +27,13 @@ const BookAppointment = () => {
   });
   const [isLoading, setIsLoading] = useState(false);
 
+  const {user} = useUser();
+
+  useEffect(() => {
+    if(user){
+      setFormData(prev => ({...prev,name: user.name}))
+    }
+  },[user])
   const diseases = [
     "Diabetes",
     "Hypertension",
@@ -155,7 +163,7 @@ const BookAppointment = () => {
           <div className="text-center mb-8">
             <h1 className="text-3xl font-bold text-gray-900">Book Your Appointment</h1>
             <p className="mt-2 text-lg text-gray-600">
-              Fill in your details below to schedule a consultation with our AI Doctor
+              Fill in your details below to schedule a consultation with our Health Sphaere
             </p>
           </div>
           

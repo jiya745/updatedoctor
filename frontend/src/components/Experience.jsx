@@ -4,8 +4,9 @@ import { useEffect, useRef, useState } from "react";
 import { Room } from "./Room";
 import { Doctor } from "./Doctor";
 
-export const Experience = ({setMessage }) => {
+export const Experience = ({setMessage,setStarted}) => {
   const [status, setStatus] = useState("Connecting...");
+  
   return (
     <>
       <CameraManager />
@@ -14,7 +15,7 @@ export const Experience = ({setMessage }) => {
           {status}
         </div>
       </Html>
-      <Doctor position={[-20, -60, 31]} scale={38} rotation={[0, -1.5, 0]} setStatus={setStatus} setMessage={setMessage}/>
+      <Doctor position={[-20, -60, 31]} scale={38} rotation={[0, -1.5, 0]} setStatus={setStatus} setMessage={setMessage} setStarted={setStarted}/>
       <Room position={[0, -2, 2]} scale={1} rotation={[0, 0.24, 0]} />
       <Environment preset="sunset" />
     </>

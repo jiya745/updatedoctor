@@ -63,10 +63,10 @@ export function Doctor(props) {
 
 
   const handlePlayAudio = async (src, data,type="ongoing") => {
+    props.setStarted(true);
     if (audioRef.current) audioRef.current.pause();
     audioRef.current = new Audio(src);
     lipsyncRef.current = data;
-
     audioRef.current.play().then(() => console.log("Audio played!"))
     .catch(err => console.log("Error playing audio:", err?.message || err));
 

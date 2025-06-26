@@ -3,7 +3,7 @@ import "dotenv/config"
 import fs from "fs"
 import path from "path";
 const __dirname = path.resolve();
-
+import wav from "wavefile";
 
 const execCommand = (command) => {
   return new Promise((resolve, reject) => {
@@ -36,19 +36,27 @@ const lipSyncMessage = async (filename,rubarbpath) => {
   };
 
 export async function getSpeakingData(text) {
-    const url = "https://api.deepgram.com/v1/speak?model=aura-zeus-en&encoding=linear16&sample_rate=16000";
-    const apiKey = process.env.DEEPGRAM_API_KEY;
-    const data = { text };
+    const apiKey = process.env.SARVAM_API_KEY;
 
     try {
         console.log("generating audio...");
-        const response = await fetch(url, {
-            method: 'POST',
+        const response = await fetch("https://api.sarvam.ai/text-to-speech", {
+            method: "POST",
             headers: {
-                'Authorization': `Token ${apiKey}`,
-                'Content-Type': 'application/json'
+                "api-subscription-key": apiKey,
+                "Content-Type": "application/json",
             },
-            body: JSON.stringify(data)
+            body: JSON.stringify({
+                inputs: [text],
+                target_language_code: "hi-IN",
+                speaker: "karun",
+                pitch: 0,
+                pace: 1,
+                loudness: 1.2,
+                speech_sample_rate: 16000,
+                enable_preprocessing: true,
+                model: "bulbul:v2",
+            }),
         });
 
        
@@ -57,10 +65,18 @@ export async function getSpeakingData(text) {
             console.error("Error response:", errorText);
             return;
         }
+        const data = await response.json();
+        let base64;
+        try {
+           base64 = data?.audios[0];
+          } catch (error) {
+                console.error("Error in SarvamTTS response", data, text);
+        }
+
         console.log("audio generated...");
-        const audioBuffer = await response.arrayBuffer();
-        const base64Audio = Buffer.from(audioBuffer).toString('base64');
-        const audioSrc = `data:audio/wav;base64,${base64Audio}`;
+        const wavBuffer = Buffer.from(base64, "base64");
+        const wavFile = new wav.WaveFile(new Uint8Array(wavBuffer));
+        const audioBuffer = wavFile.toBuffer();
 
   
         // Save the file
@@ -78,3 +94,50 @@ export async function getSpeakingData(text) {
         console.error("Error:", error);
     }
 }
+
+
+
+
+// export async function getSpeakingData(text) {
+//     const url = "https://api.deepgram.com/v1/speak?model=aura-zeus-en&encoding=linear16&sample_rate=16000";
+//     const apiKey = process.env.DEEPGRAM_API_KEY;
+//     const data = { text };
+
+//     try {
+//         console.log("generating audio...");
+//         const response = await fetch(url, {
+//             method: 'POST',
+//             headers: {
+//                 'Authorization': `Token ${apiKey}`,
+//                 'Content-Type': 'application/json'
+//             },
+//             body: JSON.stringify(data)
+//         });
+
+       
+//         if (!response.ok) {
+//             const errorText = await response.text();
+//             console.error("Error response:", errorText);
+//             return;
+//         }
+//         console.log("audio generated...");
+//         const audioBuffer = await response.arrayBuffer();
+//         const base64Audio = Buffer.from(audioBuffer).toString('base64');
+//         const audioSrc = `data:audio/wav;base64,${base64Audio}`;
+
+  
+//         // Save the file
+//         const filename = Date.now();
+//         const filepath = path.join(process.cwd(),'audios',`${filename}.mp3`);
+//         const rubarbpath = path.join(process.cwd(),process.env.MODE == "dev" ? '/bin/rhubarb': '/linux/rhubarb');
+//         fs.writeFileSync(filepath, Buffer.from(audioBuffer));
+//         const {lip_sync, wav_file,file_filename} = await lipSyncMessage(filename,rubarbpath);
+//         const lips_sync_data = JSON.parse(fs.readFileSync(lip_sync));
+//         // fs.unlinkSync(lip_sync)
+//         fs.unlinkSync(wav_file)
+//         fs.unlinkSync(filepath)
+//         return {data: lips_sync_data.mouthCues,src: file_filename};
+//     } catch (error) {
+//         console.error("Error:", error);
+//     }
+// }

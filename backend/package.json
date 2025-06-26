@@ -22,6 +22,7 @@
     "mongoose": "^8.15.2",
     "ollama": "^0.5.16",
     "openai": "^4.86.2",
-    "validator": "^13.15.15"
+    "validator": "^13.15.15",
+    "wavefile": "^11.0.0"
   }
 }
