@@ -41,7 +41,7 @@ const DoctorClinic = () => {
                 <span className={`text-sm font-medium ${
                   msg.role === "Doctor" ? "text-blue-400" : "text-purple-400"
                 }`}>
-                  {msg.role === "Doctor" ? "Health Sphaere" : "Patient"}
+                  {msg.role === "Doctor" ? "Health Sphere" : "Patient"}
                 </span>
                 <span className='text-white/40 text-xs ml-2'>
                   {new Date().toLocaleTimeString()}

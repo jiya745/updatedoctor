@@ -163,7 +163,7 @@ const BookAppointment = () => {
           <div className="text-center mb-8">
             <h1 className="text-3xl font-bold text-gray-900">Book Your Appointment</h1>
             <p className="mt-2 text-lg text-gray-600">
-              Fill in your details below to schedule a consultation with our Health Sphaere
+              Fill in your details below to schedule a consultation with our Health Sphere
             </p>
           </div>
           

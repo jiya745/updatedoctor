@@ -155,7 +155,7 @@ const Navbar = () => {
             <div className="h-8 w-8 rounded-full bg-medical-blue flex items-center justify-center">
               <span className="text-white font-bold">A</span>
             </div>
-            <span className="text-xl font-bold text-medical-blue">Health Sphaere</span>
+            <span className="text-xl font-bold text-medical-blue">Health Sphere</span>
           </Link>
 
           {/* Desktop Navigation */}

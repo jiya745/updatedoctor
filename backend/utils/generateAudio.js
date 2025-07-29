@@ -49,7 +49,7 @@ export async function getSpeakingData(text) {
             body: JSON.stringify({
                 inputs: [text],
                 target_language_code: "hi-IN",
-                speaker: "karun",
+                speaker: "hitesh",
                 pitch: 0,
                 pace: 1,
                 loudness: 1.2,

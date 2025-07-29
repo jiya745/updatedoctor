@@ -107,7 +107,7 @@ const Index = () => {
                 <span className="text-medical-blue">For You</span>
               </h1>
               <p className="text-lg text-gray-700 mb-8 max-w-lg">
-                Get instant medical assistance and personalized healthcare advice from our Health Sphaere. Book an appointment in minutes.
+                Get instant medical assistance and personalized healthcare advice from our Health Sphere. Book an appointment in minutes.
               </p>
               <div className="flex flex-col sm:flex-row gap-4">
                 <Button asChild className="hero-button bg-medical-blue hover:bg-blue-700">
@@ -201,7 +201,7 @@ const Index = () => {
                 </div>
               </div>
               <p className="text-gray-600">
-                "The Health Sphaere provided me with accurate advice for my condition. It was quick, convenient, and saved me a trip to the hospital."
+                "The Health Sphere provided me with accurate advice for my condition. It was quick, convenient, and saved me a trip to the hospital."
               </p>
             </div>
             
@@ -215,7 +215,7 @@ const Index = () => {
                 </div>
               </div>
               <p className="text-gray-600">
-                "I was skeptical at first, but the Health Sphaere's diagnosis was confirmed by my physician. Impressed with the accuracy!"
+                "I was skeptical at first, but the Health Sphere's diagnosis was confirmed by my physician. Impressed with the accuracy!"
               </p>
             </div>
             
@@ -229,7 +229,7 @@ const Index = () => {
                 </div>
               </div>
               <p className="text-gray-600">
-                "Using the Health Sphaere app has been a game-changer for managing my chronic condition. The follow-ups and reminders are extremely helpful."
+                "Using the Health Sphere app has been a game-changer for managing my chronic condition. The follow-ups and reminders are extremely helpful."
               </p>
             </div>
           </div>
@@ -241,7 +241,7 @@ const Index = () => {
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div>
-              <h3 className="text-xl font-semibold mb-4">Health Sphaere</h3>
+              <h3 className="text-xl font-semibold mb-4">Health Sphere</h3>
               <p className="text-gray-300">
                 Providing accessible healthcare through advanced AI technology.
               </p>
@@ -264,7 +264,7 @@ const Index = () => {
             </div>
           </div>
           <div className="border-t border-gray-700 mt-8 pt-8 text-center text-gray-300">
-            <p>&copy; {new Date().getFullYear()} Health Sphaere. All rights reserved.</p>
+            <p>&copy; {new Date().getFullYear()} Health Sphere. All rights reserved.</p>
           </div>
         </div>
       </footer>
