@@ -16,8 +16,8 @@ export const Experience = ({setMessage,setStarted}) => {
         </div>
       </Html>
       <Doctor position={[-20, -60, 31]} scale={38} rotation={[0, -1.5, 0]} setStatus={setStatus} setMessage={setMessage} setStarted={setStarted}/>
-      <Room position={[0, -2, 2]} scale={1} rotation={[0, 0.24, 0]} />
-      <Environment preset="sunset" />
+      {/* <Room position={[0, -2, 2]} scale={1} rotation={[0, 0.24, 0]} /> */}
+      {/* <Environment preset="sunset" /> */}
     </>
   );
 };

@@ -6,6 +6,7 @@ import { Listing } from '../services/listing'
 import * as THREE from "three";
 import { welcome } from '../../constants/welcome'
 import { useBookAppointment } from '@/context/BookAppointmentContext'
+import { useParams } from 'react-router-dom';
 
 const corresponding = {
   A: "viseme_PP",
@@ -27,6 +28,7 @@ export function Doctor(props) {
   const [animation, setAnimation] = useState("Idle");
   const [start, setStart] = useState(false);
   const {name,diseases,description} = useBookAppointment();
+  const {id} = useParams();
 
   const { scene } = useGLTF('/models/doctor-main.glb')
   const clone = React.useMemo(() => SkeletonUtils.clone(scene), [scene])
@@ -273,7 +275,7 @@ export function Doctor(props) {
   // start listing
   useEffect(() => {
     if (listingRef.current) return;
-    listingRef.current = new Listing(handlePlayAudio, handleIntrupt,props.setStatus,props.setMessage, name,diseases,description);
+    listingRef.current = new Listing(handlePlayAudio, handleIntrupt,props.setStatus,props.setMessage, name,diseases,description,id);
   }, []);
 
 

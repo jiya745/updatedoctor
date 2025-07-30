@@ -10,6 +10,7 @@ import Navbar from '@/components/Navbar';
 import { Mail, User, Lock } from 'lucide-react';
 import { toast } from 'sonner';
 import { BACKEND_URL } from "../utils/getResponse";
+import { useUser } from '@/provider/UserProvider';
 
 const Register = () => {
   const navigate = useNavigate();
@@ -28,6 +29,7 @@ const Register = () => {
     acceptTerms: '',
   });
   const [isLoading, setIsLoading] = useState(false);
+  const {login} = useUser();
 
   const validateForm = () => {
     let valid = true;
@@ -119,6 +121,7 @@ const Register = () => {
           headers: {
             'Content-Type': 'application/json',
           },
+          credentials: 'include', // This is important for cookies
           body: JSON.stringify({
             name: formData.name,
             email: formData.email,
@@ -131,12 +134,7 @@ const Register = () => {
         if (!response.ok) {
           throw new Error(data.message || 'Registration failed');
         }
-
-        // Store token in localStorage
-        localStorage.setItem('token', data.token);
-        
-        // Store user data in localStorage
-        localStorage.setItem('user', JSON.stringify(data.user));
+        login(data.user,data.token);
 
         toast.success('Registration successful!');
         navigate('/book-appointment');
@@ -153,6 +151,9 @@ const Register = () => {
       }
     }
   };
+
+
+
 
   return (
     <div className="min-h-screen flex flex-col">

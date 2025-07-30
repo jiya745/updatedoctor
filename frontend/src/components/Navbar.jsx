@@ -64,6 +64,13 @@ const Navbar = () => {
               <DropdownMenuItem asChild>
                 <Link to="/appointments" className="cursor-pointer">My Appointments</Link>
               </DropdownMenuItem>
+              {
+                user?.role === "admin" && (
+                  <DropdownMenuItem asChild>
+                    <Link to="/admin/dashboard" className="cursor-pointer">Admin Dashboard</Link>
+                  </DropdownMenuItem>
+                )
+              }
               <DropdownMenuSeparator />
               <DropdownMenuItem
                 onClick={handleLogout}
@@ -86,9 +93,6 @@ const Navbar = () => {
         <Link to="/register" className={`nav-link ${isActive('/register') ? 'active' : ''}`}>
           Register
         </Link>
-        <Button asChild className="bg-medical-orange hover:bg-opacity-90">
-          <Link to="/book-appointment">Book Appointment</Link>
-        </Button>
       </>
     );
   };
@@ -196,14 +200,7 @@ const Navbar = () => {
               >
                 About
               </Link>
-
-              <Button
-                asChild
-                className="bg-medical-orange hover:bg-opacity-90 w-full"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                <Link to="/book-appointment">Book Appointment</Link>
-              </Button>
+              
               {renderMobileAuthButtons()}
             </div>
           </div>

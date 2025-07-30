@@ -3,17 +3,21 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Index from "./pages/Index";
-import About from "./pages/About";
-import Login from "./pages/Login";
-import Register from "./pages/Register";
-import BookAppointment from "./pages/BookAppointment";
-import DoctorClinic from "./pages/DoctorClinic";
-import NotFound from "./pages/NotFound";
-import { BookAppointmentProvider } from "./context/BookAppointmentContext";
-import UserProvider from "./provider/UserProvider";
-import MyAppointments from "./pages/MyAppointments";
-import ResetPassword from "./pages/ResetPassword";
+import Index from "@/pages/Index";
+import About from "@/pages/About";
+import Login from "@/pages/Login";
+import Register from "@/pages/Register";
+import BookAppointment from "@/pages/BookAppointment";
+import DoctorClinic from "@/pages/DoctorClinic";
+import NotFound from "@/pages/NotFound";
+import { BookAppointmentProvider } from "@/context/BookAppointmentContext";
+import UserProvider from "@/provider/UserProvider";
+import MyAppointments from "@/pages/MyAppointments";
+import ResetPassword from "@/pages/ResetPassword";
+import AdminDashabord from "@/pages/AdminDashabord";
+import AdminFeedback from "@/pages/AdminFeedback";
+import AdminSession from "@/pages/AdminSession";
+import AdminUser from "@/pages/AdminUser";
 
 const queryClient = new QueryClient();
 
@@ -31,9 +35,13 @@ const App = () => (
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
               <Route path="/book-appointment" element={<BookAppointment />} />
-              <Route path="/doctor-clinic" element={<DoctorClinic />} />
+              <Route path="/doctor-clinic/:id" element={<DoctorClinic />} />
               <Route path="/appointments" element={<MyAppointments />} />
               <Route path="/reset-password/:token" element={<ResetPassword />} />
+              <Route path="/admin/dashboard" element={<AdminDashabord />} />
+              <Route path="/admin/feedback" element={<AdminFeedback />} />
+              <Route path="/admin/sessions" element={<AdminSession />} />
+              <Route path="/admin/users" element={<AdminUser />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </BrowserRouter>

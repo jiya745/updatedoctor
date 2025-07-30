@@ -15,6 +15,10 @@ const userSchema = new mongoose.Schema({
         unique: true,
         validation: validator.isEmail
     },
+    isActive: {
+        type: Boolean,
+        default: true
+    },
     password: {
         type: String,
         required: true,
@@ -25,6 +29,8 @@ const userSchema = new mongoose.Schema({
             name: {type: String,default: undefined},
             disease: {type: String,default: undefined},
             description: {type: String,default: undefined},
+            uuid: {type: String,default: undefined},
+            isActive: {type: Boolean,default: false},
             chats: [
                 {
                     role: {type: String,enum: ["doctor","patience"]},
@@ -33,6 +39,11 @@ const userSchema = new mongoose.Schema({
             ]
         }
     ],
+    role: {
+        type: String,
+        enum: ["admin","user"],
+        default: "user"
+    },
     resetPasswordToken: String,
     resetPasswordExpire: Date
 }, {

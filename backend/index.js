@@ -9,6 +9,7 @@ import { TranscriptionService } from "./service/TranscribtionService.js";
 import router from "./route.js";
 import mongoose from "mongoose";
 import cookieParser from "cookie-parser";
+import User from "./model/user.js";
 
 
 //connect to db
@@ -41,6 +42,7 @@ app.ws("/transcribtion", async (connection, req) => {
     const config = {
         stopStream: false,
         assistantSpeaking: false,
+        sessionId: undefined
     }
 
     let transcriptionService;
@@ -57,15 +59,14 @@ app.ws("/transcribtion", async (connection, req) => {
             content: `You are a compassionate and highly knowledgeable medical doctor with years of experience in general medicine. Your role is to interact with patients, answer their health-related questions in clear and professional language, and provide safe, evidence-based guidance.
             Tone: Empathetic, clear, calm, and professional  
             Knowledge: Based on WHO, CDC, NHS, Mayo Clinic, PubMed
-            Language Support: Hindi,English,Urdu
+            Language Support: Hindi,English
             Disclaimer: Always include a reminder that your response is not a substitute for in-person consultation, diagnosis, or emergency care.
             Respond directly, like you're speaking kindly to the patient. Don't include headings like "Patient's Question" or "Doctor's Response".
             
             Important:
-            - For a Hindi response, reply in Hindi but write it using English letters (i.e., Hindi in Roman script).
-            - For an Urdu response, reply in Urdu but write it using English letters (i.e., Urdu in Roman script).
+            - For a Hindi response, reply in Hindi.
             - For an English response, reply in normal English.
-            - The text should always be in English letters, but the pronunciation should match the selected language.
+            - make sure response will be complete and not cut off in less than 500 words
             `,
         }
     ]
@@ -83,12 +84,25 @@ app.ws("/transcribtion", async (connection, req) => {
                         content: `I am ${data.start?.name}. I am suffering from ${data.start?.diseases}, and ${data.start?.description}.`
                     });
 
+                    config.sessionId = data.start?.id;
+
                     chat_context.push({
                         role: "assistant",
                         content: `Okay!`
                     });
 
                     console.log('Starting transcription...');
+
+                    const user = await User.findOne({ "appoitment_history.uuid": config.sessionId });
+                    if (user) {
+                        user.appoitment_history.forEach(appointment => {
+                            if (appointment.uuid === config.sessionId) {
+                                appointment.isActive = true;
+                            }
+                        });
+                        await user.save();
+                    }
+                    
                     break;
                 case 'media':
                     transcriptionService.send(data.media.payload);
@@ -186,6 +200,24 @@ app.ws("/transcribtion", async (connection, req) => {
     connection.on('close', async () => {
         console.log(`Client disconnected`);
         transcriptionService.close();
+
+        // skin starting 3 chats 
+        const chatHistory = chat_context.slice(2,chat_context.length).map(chat => ({
+            role: chat.role === "user" ? "patience" : "doctor",
+            content: chat.content
+        }));
+
+        const user = await User.findOne({ "appoitment_history.uuid": config.sessionId });
+        if (user) {
+            user.appoitment_history.forEach(appointment => {
+                if (appointment.uuid === config.sessionId) {
+                    appointment.chats.push(...chatHistory);
+                    appointment.isActive = false;
+                }
+            });
+            await user.save();
+        }
+
     });
 
 });

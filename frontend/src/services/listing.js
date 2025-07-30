@@ -9,7 +9,7 @@ export class Listing {
     setStatus = null;
     noiseProcessor = new VideoSDKNoiseSuppressor();
 
-    constructor(handlePlayAudio, handleIntrupt, setStatus,setMessage, name,diseases,description) {
+    constructor(handlePlayAudio, handleIntrupt, setStatus,setMessage, name,diseases,description,id) {
         this.play = handlePlayAudio;
         this.stop = handleIntrupt;
         this.setStatus = setStatus;
@@ -20,7 +20,7 @@ export class Listing {
             this.socket.send(JSON.stringify({
                 event: "start",
                 start: {
-                    name,diseases,description
+                    name,diseases,description,id
                 }
             }));
             setTimeout(() => this.sendAudioStream(), 4000);

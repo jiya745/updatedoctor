@@ -7,11 +7,20 @@ import { Calendar, Clock, MessageSquare, AlertCircle } from 'lucide-react';
 import { toast } from 'sonner';
 import Navbar from '@/components/Navbar';
 import { format } from 'date-fns';
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+} from '@/components/ui/sheet';
 
 const MyAppointments = () => {
   const { user } = useUser();
   const [appointments, setAppointments] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [isSheetOpen, setIsSheetOpen] = useState(false);
+  const [selectedAppointment, setSelectedAppointment] = useState(null);
 
   useEffect(() => {
     fetchAppointments();
@@ -49,6 +58,11 @@ const MyAppointments = () => {
       default:
         return 'bg-gray-100 text-gray-800';
     }
+  };
+
+  const handleViewChats = (appointment) => {
+    setSelectedAppointment(appointment);
+    setIsSheetOpen(true);
   };
 
   if (loading) {
@@ -95,22 +109,85 @@ const MyAppointments = () => {
 
                 <CardContent className="p-6">
                   <div className="flex justify-between items-start">
-                    <div>
+                    <div className="flex-1">
                       <CardTitle className="text-xl font-semibold">
                         {appointment.disease || 'General Consultation'}
                       </CardTitle>
                       <CardDescription className="mt-1">
                         {appointment.description || 'No description provided'}
                       </CardDescription>
+                      <div className="mt-3 flex items-center gap-4 text-sm text-gray-600">
+                        <div className="flex items-center gap-1">
+                          <MessageSquare className="h-4 w-4" />
+                          <span>{appointment.chats?.length || 0} messages</span>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="flex gap-2">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => handleViewChats(appointment)}
+                        // disabled={!appointment.chats || appointment.chats.length === 0}
+                      >
+                        <MessageSquare className="h-4 w-4 mr-2" />
+                        View Chats
+                      </Button>
                     </div>
                   </div>
-
                 </CardContent>
               </Card>
             ))}
           </div>
         )}
       </div>
+
+      {/* Chat History Sidebar */}
+      <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
+        <SheetContent className="w-[400px] sm:w-[540px] p-4">
+          <SheetHeader>
+            <SheetTitle>Chat History</SheetTitle>
+            <SheetDescription>
+              Conversation for {selectedAppointment?.disease || 'Appointment'}
+            </SheetDescription>
+          </SheetHeader>
+          
+          <div className="mt-6 flex-1 overflow-y-auto">
+            {selectedAppointment?.chats && selectedAppointment.chats.length > 0 ? (
+              <div className="space-y-4">
+                {selectedAppointment.chats.map((chat, index) => (
+                  <div
+                    key={index}
+                    className={`flex ${
+                      chat.role === 'doctor' ? 'justify-start' : 'justify-end'
+                    }`}
+                  >
+                    <div
+                      className={`max-w-[80%] rounded-lg p-3 ${
+                        chat.role === 'doctor'
+                          ? 'bg-blue-100 text-blue-900'
+                          : 'bg-gray-100 text-gray-900'
+                      }`}
+                    >
+                      <div className="text-xs font-medium mb-1 capitalize">
+                        {chat.role === 'doctor' ? 'Doctor' : 'Patient'}
+                      </div>
+                      <div className="text-sm">
+                        {chat.content}
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="flex flex-col items-center justify-center h-[300px] text-gray-500">
+                <MessageSquare className="h-12 w-12 mb-4" />
+                <p>No chat history available for this appointment.</p>
+              </div>
+            )}
+          </div>
+        </SheetContent>
+      </Sheet>
     </div>
   );
 };

@@ -14,7 +14,7 @@ export async function generateResponse(messages) {
         presence_penalty: 0.6,
         frequency_penalty: 0,
         top_p: 1,
-        max_tokens: 200,
+        max_tokens: 300,
         messages,
     });
 

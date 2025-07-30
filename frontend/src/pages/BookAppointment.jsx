@@ -27,7 +27,7 @@ const BookAppointment = () => {
   });
   const [isLoading, setIsLoading] = useState(false);
 
-  const {user} = useUser();
+  const {user,isAuth} = useUser();
 
   useEffect(() => {
     if(user){
@@ -137,10 +137,11 @@ const BookAppointment = () => {
         setName(formData.name);
         setDiseases(formData.disease);
         setDescription(formData.symptoms);
+        const appointmentId = data.appointment.uuid;
         
         toast.success("Your appointment has been successfully scheduled.");
         
-        navigate('/doctor-clinic', { 
+        navigate(`/doctor-clinic/${appointmentId}`, { 
           state: { 
             appointmentData: formData 
           } 
@@ -153,6 +154,13 @@ const BookAppointment = () => {
       }
     }
   };
+
+
+  useEffect(() => {
+    if (isAuth === false) {
+      navigate('/login');
+    }
+  }, [isAuth]);
 
   return (
     <div className="min-h-screen flex flex-col">

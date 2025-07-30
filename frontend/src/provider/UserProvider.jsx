@@ -14,7 +14,7 @@ export const useUser = () => {
 
 export const UserProvider = ({ children }) => {
     const [user, setUser] = useState(null);
-    const [isAuth, setIsAuth] = useState(false);
+    const [isAuth, setIsAuth] = useState(null);
     const [loading, setLoading] = useState(true);
 
     // Check if user is authenticated on mount
